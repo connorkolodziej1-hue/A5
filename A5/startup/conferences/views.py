@@ -60,26 +60,29 @@ def registration_form(request):
 
     if not data["checked_in"]:
         errors.append("Event is required.")
-
-    try:
-        event_obj = Event.objects.get(id=data["event_id"])
-        if event_obj.is_cancelled:
-            errors.append("Event is cancelled")
-    except Event.DoesNotExist:
-        errors.append("Event not found")
-
+    
     if not errors:
-        registration = Registration.objects.create(
-            event=data["event_id"],
-            attendee_email=data["attendee_email"],
-            checked_in=data["checked_in"],
-            registered_at=timezone.now()
-        )
-        
-        return render(request, "conferences/registration_confirmation.html", {"registered_at": timezone.now()})
+        try:
+            event_obj = Event.objects.get(id=data["event_id"])
+            if event_obj.is_cancelled:
+                errors.append("Event is cancelled")
+        except Event.DoesNotExist:
+            errors.append("Event not found")
+
+    if errors:
+        return render(request, "conferences/registration_form.html", {
+            "errors": errors,
+            "data": data
+        })
+    
+    registration = Registration.objects.create(
+        event=data["event_id"],
+        attendee_email=data["attendee_email"],
+        checked_in=data["checked_in"],
+        registered_at=timezone.now()
+    )
+    
+    return render(request, "conferences/registration_confirmation.html", {"registered_at": timezone.now()})
 
 
-    return render(request, "conferences/registration_form.html", {
-        "errors": errors,
-        "data": data
-    })
+    
