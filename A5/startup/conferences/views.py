@@ -76,7 +76,7 @@ def registration_form(request):
         })
     
     registration = Registration.objects.create(
-        event=data["event_id"],
+        event=event_obj,
         attendee_email=data["attendee_email"],
         checked_in=data["checked_in"],
         registered_at=timezone.now()
