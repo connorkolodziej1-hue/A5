@@ -82,7 +82,7 @@ def registration_form(request):
         registered_at=timezone.now()
     )
     
-    return render(request, "conferences/registration_confirmation.html", {"registered_at": timezone.now()})
+    return render(request, "conferences/registration_confirmation.html", {"registered_at": timezone.now(), "registration": registration})
 
 
     
