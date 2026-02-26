@@ -18,7 +18,7 @@ def event_list(request):
     """
     A5 Part 2A: Template-based event list + GET filter checkbox show_cancelled.
     """
-    show_cancelled = request.GET.get("show_cancelled")
+    show_cancelled = request.GET.get("show_cancelled") == "on"
     if show_cancelled != True:
         events = Event.objects.all().order_by('starts_at').filter(is_cancelled = False)
     else:
