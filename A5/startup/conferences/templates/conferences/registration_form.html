@@ -15,6 +15,7 @@
   -->
   {% if errors %}
   <ul>
+      <ul style="color:red;">
       {% for error in errors %}
       <li>{{ error }}</li>
       {% endfor %}
@@ -40,7 +41,7 @@
         name="event_id"
         min = "1"
         required
-        value = "{{ data.event_id }}"
+        value="{{ data.event_id|default:'' }}"
       >
     </div>
 
@@ -57,7 +58,7 @@
         type="email"
         name="attendee_email"
         required
-        value = "{{ data.attendee_email }}"
+        value="{{ data.attendee_email|default:'' }}"
       >
     </div>
 
