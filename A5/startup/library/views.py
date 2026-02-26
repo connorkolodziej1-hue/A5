@@ -13,7 +13,7 @@ def q1_all_authors(request):
     return HttpResponse(output)
 
 def q2_all_books(request):
-    query_set = Book.objects.all()
+    query_set = Book.objects.all().order_by('published_year')
     # Code to do the query above followed by this output loop
     output = "<ul>"
     for obj in query_set:
@@ -31,7 +31,7 @@ def q3_books_after_year(request, year):
     return HttpResponse(output)
 
 def q4_books_by_author(request, author_id):
-    query_set = Book.objects.filter(published_year=author_id)
+    query_set = Book.objects.filter(author=author_id)
     # Code to do the query above followed by this output loop
     output = "<ul>"
     for obj in query_set:
@@ -49,11 +49,15 @@ def q5_open_loans(request):
     return HttpResponse(output)
 
 def q6_loans_due_before(request):
-    try:     
-        time = request.GET["time"]
-        time = parse_datetime(time)
+    try:
+        time_str = request.GET.get("time")
+
+        if not time_str:
+            return HttpResponse("<h1>ERROR: Please provide a time parameter.</h1>")
+
+        time = parse_datetime(time_str)
         if time is None:
-            raise ValueError("input isn't well formatted")
+            return HttpResponse("<h1>ERROR: Invalid datetime format.</h1>")
         query_set = Loan.objects.filter(due_at__lt=time)
         output = "<ul>"
         for obj in query_set:
@@ -62,7 +66,7 @@ def q6_loans_due_before(request):
         return HttpResponse(output)
     except ValueError as e:
         return HttpResponse(f"<h1>Error found: {e}</h1>")
-        
+
 def q7_book_by_isbn(request, isbn):
     query_set = Book.objects.filter(isbn=isbn)
     if query_set.count() == 0:
@@ -81,4 +85,3 @@ def q8_stats(request):
     open_loan_count = Loan.objects.filter(returned=False).count()
 
     return HttpResponse(f"<p>number of books: {book_count}</p><p>number of authors: {author_count}</p><p>number of loans: {loan_count}</p><p>number of open loans: {open_loan_count}</p>")
-    
