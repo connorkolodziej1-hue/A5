@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Register for Event</title>
+</head>
+<body>
+
+  <h1>Event Registration</h1>
+
+  <!--
+    TODO:
+    Display all error messages passed from the view, if any.
+    The view may pass a variable named "errors".
+  -->
+  {% if errors %}
+  <ul>
+      {% for error in errors %}
+      <li>{{ error }}</li>
+      {% endfor %}
+  </ul>
+  {% endif %}
+  
+  <!-- A form without an action submits back to the same url -->
+  <form method="post">
+    {% csrf_token %}
+
+    <div>
+      <label for="event_id">Event ID:</label>
+      <!--
+          TODO:
+          - Make the minimum allowed ID number 1
+          - Make the input required
+          - If the request has an event_id, show that stored value
+            (so the user doesn't lose their work after a validation error)
+        -->
+      <input
+        id="event_id"
+        type="number"
+        name="event_id"
+        min = "1"
+        required
+        value = "{{ data.event_id }}"
+      >
+    </div>
+
+    <div>
+      <label for="attendee_email">Email:</label>
+
+      <!--
+          TODO:
+          - Make the input required
+          - If the request has attendee_email, show that stored value
+        -->
+      <input
+        id="attendee_email"
+        type="email"
+        name="attendee_email"
+        required
+        value = "{{ data.attendee_email }}"
+      >
+    </div>
+
+    <div>
+      <!--
+        TODO (student):
+        - If the user checked this box in their POST request, keep it checked
+      -->
+      <input
+        type="checkbox"
+        id="checked_in"
+        name="checked_in"
+        {% if data.checked_in %}checked{% endif %}
+      >
+      <label for="checked_in">Checked in</label>
+    </div>
+
+    <button type="submit">Register</button>
+  </form>
+
+</body>
+</html>
