@@ -65,9 +65,9 @@ def registration_form(request):
         try:
             event_obj = Event.objects.get(id=data["event_id"])
             if event_obj.is_cancelled:
-                errors.append("Event is cancelled")
+                errors.append("Registration is not allowed: event is cancelled")
         except Event.DoesNotExist:
-            errors.append("Event not found")
+            errors.append("Registration is not allowed: Event not found")
 
     if errors:
         return render(request, "conferences/registration_form.html", {
