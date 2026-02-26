@@ -42,12 +42,14 @@ def registration_form(request):
     
     data["event_id"] = request.POST.get("event_id", "").strip()
     data["attendee_email"] = request.POST.get("attendee_email", "")
-    data["checked_in"] = request.POST.get("checked_in")
+    data["checked_in"] = request.POST.get("checked_in") == "on"
 
     if not data["event_id"]:
         errors.append("Name is required.")
-    
-    if type(data["event_id"] != int):
+
+    try:
+        data["event_id"] = int(data["event_id"])
+    except ValueError:
         errors.append("event_id must be a number")
 
     if not data["attendee_email"]:
@@ -58,14 +60,18 @@ def registration_form(request):
 
     if not data["checked_in"]:
         errors.append("Event is required.")
-    
-    if Event.objects.get(data["event_id"]).is_cancelled:
-        errors.append("Event is cancelled")
+
+    try:
+        event_obj = Event.objects.get(id=data["event_id"])
+        if event_obj.is_cancelled:
+            errors.append("Event is cancelled")
+    except Event.DoesNotExist:
+        errors.append("Event not found")
 
     if not errors:
         registration = Registration.objects.create(
             event=data["event_id"],
-            attendee_email=data["email"],
+            attendee_email=data["attendee_email"],
             checked_in=data["checked_in"],
             registered_at=timezone.now()
         )
@@ -73,7 +79,7 @@ def registration_form(request):
         return render(request, "conferences/registration_confirmation.html", {"registered_at": timezone.now()})
 
 
-    return render(request, "registration_form.html", {
+    return render(request, "conferences/registration_form.html", {
         "errors": errors,
         "data": data
     })
