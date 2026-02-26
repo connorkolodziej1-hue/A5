@@ -13,7 +13,7 @@ def q1_all_authors(request):
     return HttpResponse(output)
 
 def q2_all_books(request):
-    query_set = Book.objects.all().order_by('published_year')
+    query_set = Book.objects.all().order_by('-published_year')
     # Code to do the query above followed by this output loop
     output = "<ul>"
     for obj in query_set:
@@ -50,7 +50,7 @@ def q5_open_loans(request):
 
 def q6_loans_due_before(request):
     try:
-        time_str = request.GET.get("time")
+        time_str = request.GET.get("t")
 
         if not time_str:
             return HttpResponse("<h1>ERROR: Please provide a time parameter.</h1>")
